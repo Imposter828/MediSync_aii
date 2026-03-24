@@ -1,0 +1,76 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(PATIENT)
+  createdAt DateTime @default(now())
+  doctor    Doctor?
+  patient   Patient?
+}
+
+enum Role {
+  DOCTOR
+  PATIENT
+}
+
+model Doctor {
+  id              String        @id @default(cuid())
+  userId          String        @unique
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  specialization  String
+  experience      Int
+  appointments    Appointment[]
+  medicalRecords  MedicalRecord[]
+  createdAt       DateTime      @default(now())
+}
+
+model Patient {
+  id              String        @id @default(cuid())
+  userId          String        @unique
+  user            User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  age             Int?
+  gender          String?
+  appointments    Appointment[]
+  medicalRecords  MedicalRecord[]
+  createdAt       DateTime      @default(now())
+}
+
+model Appointment {
+  id        String            @id @default(cuid())
+  patientId String
+  doctorId  String
+  patient   Patient           @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  doctor    Doctor            @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  date      DateTime
+  status    AppointmentStatus @default(PENDING)
+  createdAt DateTime          @default(now())
+}
+
+enum AppointmentStatus {
+  PENDING
+  APPROVED
+  CANCELLED
+}
+
+model MedicalRecord {
+  id        String   @id @default(cuid())
+  patientId String
+  doctorId  String
+  patient   Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  doctor    Doctor   @relation(fields: [doctorId], references: [id], onDelete: Cascade)
+  symptom   String
+  duration  Int
+  diagnosis String?
+  treatment String?
+  createdAt DateTime @default(now())
+}
