@@ -63,6 +63,12 @@ Provide a concise summary highlighting key patterns and insights.
     return NextResponse.json({ summary });
   } catch (error) {
     console.error("Summary generator error:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
+    return NextResponse.json(
+      {
+        error:
+          error instanceof Error ? error.message : "Internal server error",
+      },
+      { status: 500 }
+    );
   }
 }

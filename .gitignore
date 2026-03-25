@@ -1,1 +1,6 @@
+.env
+.next
+.enc.local
+.env.development
+.env.production
 node_modules

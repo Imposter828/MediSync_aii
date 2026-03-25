@@ -114,10 +114,21 @@ export default function PatientFindDoctor() {
     }
   };
 
+  const specializationMap: Record<string, string> = {
+    "Cardiologist": "Cardiology",
+    "Neurologist": "Neurology",
+    "ENT Specialist": "ENT",
+    "Dermatologist": "Dermatology",
+    "Orthopedic": "Orthopedic",
+    "Pediatrician": "Pediatrician",
+    "Psychiatrist": "Psychiatry",
+  };
+
   const filteredDoctors = aiSuggestion
-    ? doctors.filter((d) => aiSuggestion.suggested.some((s: string) => 
-        d.specialization.toLowerCase().includes(s.toLowerCase()) || s === "Specialist"
-      ))
+    ? doctors.filter((d) => aiSuggestion.suggested.some((s: string) => {
+        const mapped = specializationMap[s] || s;
+        return d.specialization === mapped || s === "Specialist";
+      }))
     : doctors;
 
   return (
@@ -214,7 +225,7 @@ export default function PatientFindDoctor() {
                   <SelectItem value="Pediatrician">Pediatrician</SelectItem>
                   <SelectItem value="Orthopedic">Orthopedic</SelectItem>
                   <SelectItem value="ENT">ENT Specialist</SelectItem>
-                  <SelectItem value="Psychiatrist">Psychiatrist</SelectItem>
+                  <SelectItem value="Psychiatry">Psychiatrist</SelectItem>
                 </SelectContent>
               </Select>
               <Select value={filterExperience} onValueChange={setFilterExperience}>
@@ -237,82 +248,97 @@ export default function PatientFindDoctor() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredDoctors.map((doctor) => (
-                <Card key={doctor.id} className="hover:shadow-md transition-shadow">
-                  <CardContent className="p-6">
-                    <div className="flex items-center gap-4 mb-4">
-                      <div className="p-3 bg-primary/10 rounded-full">
-                        <Stethoscope className="h-6 w-6 text-primary" />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold">Dr. {doctor.user.name}</h3>
-                        <p className="text-sm text-muted-foreground">{doctor.specialization}</p>
-                      </div>
-                    </div>
-                    <div className="space-y-2 text-sm text-muted-foreground mb-4">
-                      <div className="flex items-center gap-2">
-                        <User className="h-4 w-4" />
-                        {doctor.experience} years experience
-                      </div>
-                    </div>
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button className="w-full" onClick={() => setSelectedDoctor(doctor)}>
-                          Book Appointment
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent>
-                        <DialogHeader>
-                          <DialogTitle>Book Appointment</DialogTitle>
-                          <DialogDescription>
-                            Book an appointment with Dr. {doctor.user.name}
-                          </DialogDescription>
-                        </DialogHeader>
-                        <div className="space-y-4">
-                          {bookingSuccess ? (
-                            <div className="p-4 bg-green-100 text-green-700 rounded-lg text-center">
-                              Appointment booked successfully!
-                            </div>
-                          ) : (
-                            <>
-                              <div>
-                                <Label>Date</Label>
-                                <Input
-                                  type="date"
-                                  value={bookingDate}
-                                  onChange={(e) => setBookingDate(e.target.value)}
-                                />
-                              </div>
-                              <div>
-                                <Label>Time</Label>
-                                <Input
-                                  type="time"
-                                  value={bookingTime}
-                                  onChange={(e) => setBookingTime(e.target.value)}
-                                />
-                              </div>
-                              <Button
-                                className="w-full"
-                                onClick={bookAppointment}
-                                disabled={bookingLoading || !bookingDate || !bookingTime}
-                              >
-                                {bookingLoading ? (
-                                  <>
-                                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                                    Booking...
-                                  </>
-                                ) : (
-                                  "Confirm Booking"
-                                )}
-                              </Button>
-                            </>
-                          )}
+              {filteredDoctors.map((doctor) => {
+                const isSelected = selectedDoctor?.id === doctor.id;
+                return (
+                  <Card
+                    key={doctor.id}
+                    className={`hover:shadow-md transition-shadow ${isSelected ? "border-2 border-primary" : ""}`}
+                  >
+                    <CardContent className="p-6">
+                      <div className="flex items-center gap-4 mb-4">
+                        <div className="p-3 bg-primary/10 rounded-full">
+                          <Stethoscope className="h-6 w-6 text-primary" />
                         </div>
-                      </DialogContent>
-                    </Dialog>
-                  </CardContent>
-                </Card>
-              ))}
+                        <div>
+                          <h3 className="font-semibold">Dr. {doctor.user.name}</h3>
+                          <p className="text-sm text-muted-foreground">{doctor.specialization}</p>
+                        </div>
+                      </div>
+                      <div className="space-y-2 text-sm text-muted-foreground mb-4">
+                        <div className="flex items-center gap-2">
+                          <User className="h-4 w-4" />
+                          {doctor.experience} years experience
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          variant={isSelected ? "secondary" : "outline"}
+                          onClick={() => setSelectedDoctor(doctor)}
+                          className="flex-1"
+                        >
+                          {isSelected ? "Selected" : "Select Doctor"}
+                        </Button>
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button className="flex-1" onClick={() => setSelectedDoctor(doctor)}>
+                              Book Appointment
+                            </Button>
+                          </DialogTrigger>
+                          <DialogContent>
+                            <DialogHeader>
+                              <DialogTitle>Book Appointment</DialogTitle>
+                              <DialogDescription>
+                                Book an appointment with Dr. {doctor.user.name}
+                              </DialogDescription>
+                            </DialogHeader>
+                            <div className="space-y-4">
+                              {bookingSuccess ? (
+                                <div className="p-4 bg-green-100 text-green-700 rounded-lg text-center">
+                                  Appointment booked successfully!
+                                </div>
+                              ) : (
+                                <>
+                                  <div>
+                                    <Label>Date</Label>
+                                    <Input
+                                      type="date"
+                                      value={bookingDate}
+                                      onChange={(e) => setBookingDate(e.target.value)}
+                                    />
+                                  </div>
+                                  <div>
+                                    <Label>Time</Label>
+                                    <Input
+                                      type="time"
+                                      value={bookingTime}
+                                      onChange={(e) => setBookingTime(e.target.value)}
+                                    />
+                                  </div>
+                                  <Button
+                                    className="w-full"
+                                    onClick={bookAppointment}
+                                    disabled={bookingLoading || !bookingDate || !bookingTime}
+                                  >
+                                    {bookingLoading ? (
+                                      <>
+                                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                                        Booking...
+                                      </>
+                                    ) : (
+                                      "Confirm Booking"
+                                    )}
+                                  </Button>
+                                </>
+                              )}
+                            </div>
+                          </DialogContent>
+                        </Dialog>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
           )}
 

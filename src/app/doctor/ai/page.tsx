@@ -22,6 +22,8 @@ export default function DoctorAI() {
   const [symptomText, setSymptomText] = useState("");
   const [notesResult, setNotesResult] = useState("");
   const [summaryResult, setSummaryResult] = useState("");
+  const [notesError, setNotesError] = useState("");
+  const [summaryError, setSummaryError] = useState("");
   const [loadingNotes, setLoadingNotes] = useState(false);
   const [loadingSummary, setLoadingSummary] = useState(false);
 
@@ -34,16 +36,27 @@ export default function DoctorAI() {
   const generateNotes = async () => {
     if (!symptomText) return;
     setLoadingNotes(true);
+    setNotesError("");
+    setNotesResult("");
     try {
       const res = await fetch("/api/ai/notes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ symptomText }),
       });
+
       const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Unable to generate medical notes.");
+      }
+
       setNotesResult(data.result);
     } catch (error) {
       console.error(error);
+      setNotesError(
+        error instanceof Error ? error.message : "Unable to generate medical notes."
+      );
     } finally {
       setLoadingNotes(false);
     }
@@ -52,16 +65,27 @@ export default function DoctorAI() {
   const generateSummary = async () => {
     if (!selectedPatient) return;
     setLoadingSummary(true);
+    setSummaryError("");
+    setSummaryResult("");
     try {
       const res = await fetch("/api/ai/summary", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ patientId: selectedPatient }),
       });
+
       const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Unable to generate patient summary.");
+      }
+
       setSummaryResult(data.summary);
     } catch (error) {
       console.error(error);
+      setSummaryError(
+        error instanceof Error ? error.message : "Unable to generate patient summary."
+      );
     } finally {
       setLoadingSummary(false);
     }
@@ -120,6 +144,11 @@ export default function DoctorAI() {
                       {notesResult}
                     </div>
                   )}
+                  {notesError && (
+                    <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive">
+                      {notesError}
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -171,6 +200,11 @@ export default function DoctorAI() {
                   {summaryResult && (
                     <div className="p-4 bg-muted rounded-lg whitespace-pre-wrap text-sm">
                       {summaryResult}
+                    </div>
+                  )}
+                  {summaryError && (
+                    <div className="rounded-lg border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive">
+                      {summaryError}
                     </div>
                   )}
                 </div>

@@ -76,18 +76,171 @@ async function main() {
     },
   });
 
-  const doctor5 = await prisma.user.upsert({
-    where: { email: "dr.davis@medisy.com" },
+  const doctor6 = await prisma.user.upsert({
+    where: { email: "dr.anderson@medisy.com" },
     update: {},
     create: {
-      name: "Lisa Davis",
-      email: "dr.davis@medisy.com",
+      name: "David Anderson",
+      email: "dr.anderson@medisy.com",
       password: hashedPassword,
       role: "DOCTOR",
       doctor: {
         create: {
-          specialization: "Pediatrician",
-          experience: 6,
+          specialization: "ENT",
+          experience: 14,
+        },
+      },
+    },
+  });
+
+  const doctor7 = await prisma.user.upsert({
+    where: { email: "dr.martinez@medisy.com" },
+    update: {},
+    create: {
+      name: "Maria Martinez",
+      email: "dr.martinez@medisy.com",
+      password: hashedPassword,
+      role: "DOCTOR",
+      doctor: {
+        create: {
+          specialization: "Orthopedic",
+          experience: 18,
+        },
+      },
+    },
+  });
+
+  const doctor8 = await prisma.user.upsert({
+    where: { email: "dr.taylor@medisy.com" },
+    update: {},
+    create: {
+      name: "Robert Taylor",
+      email: "dr.taylor@medisy.com",
+      password: hashedPassword,
+      role: "DOCTOR",
+      doctor: {
+        create: {
+          specialization: "Psychiatry",
+          experience: 11,
+        },
+      },
+    },
+  });
+
+  const doctor9 = await prisma.user.upsert({
+    where: { email: "dr.garcia@medisy.com" },
+    update: {},
+    create: {
+      name: "Anna Garcia",
+      email: "dr.garcia@medisy.com",
+      password: hashedPassword,
+      role: "DOCTOR",
+      doctor: {
+        create: {
+          specialization: "Gynecologist",
+          experience: 9,
+        },
+      },
+    },
+  });
+
+  const doctor10 = await prisma.user.upsert({
+    where: { email: "dr.lee@medisy.com" },
+    update: {},
+    create: {
+      name: "Kevin Lee",
+      email: "dr.lee@medisy.com",
+      password: hashedPassword,
+      role: "DOCTOR",
+      doctor: {
+        create: {
+          specialization: "Ophthalmologist",
+          experience: 13,
+        },
+      },
+    },
+  });
+
+  const doctor11 = await prisma.user.upsert({
+    where: { email: "dr.white@medisy.com" },
+    update: {},
+    create: {
+      name: "Susan White",
+      email: "dr.white@medisy.com",
+      password: hashedPassword,
+      role: "DOCTOR",
+      doctor: {
+        create: {
+          specialization: "Dentist",
+          experience: 7,
+        },
+      },
+    },
+  });
+
+  const doctor12 = await prisma.user.upsert({
+    where: { email: "dr.clark@medisy.com" },
+    update: {},
+    create: {
+      name: "Thomas Clark",
+      email: "dr.clark@medisy.com",
+      password: hashedPassword,
+      role: "DOCTOR",
+      doctor: {
+        create: {
+          specialization: "Urologist",
+          experience: 16,
+        },
+      },
+    },
+  });
+
+  const doctor13 = await prisma.user.upsert({
+    where: { email: "dr.rodriguez@medisy.com" },
+    update: {},
+    create: {
+      name: "Carmen Rodriguez",
+      email: "dr.rodriguez@medisy.com",
+      password: hashedPassword,
+      role: "DOCTOR",
+      doctor: {
+        create: {
+          specialization: "Endocrinologist",
+          experience: 12,
+        },
+      },
+    },
+  });
+
+  const doctor14 = await prisma.user.upsert({
+    where: { email: "dr.king@medisy.com" },
+    update: {},
+    create: {
+      name: "Daniel King",
+      email: "dr.king@medisy.com",
+      password: hashedPassword,
+      role: "DOCTOR",
+      doctor: {
+        create: {
+          specialization: "Rheumatologist",
+          experience: 15,
+        },
+      },
+    },
+  });
+
+  const doctor15 = await prisma.user.upsert({
+    where: { email: "dr.wright@medisy.com" },
+    update: {},
+    create: {
+      name: "Jennifer Wright",
+      email: "dr.wright@medisy.com",
+      password: hashedPassword,
+      role: "DOCTOR",
+      doctor: {
+        create: {
+          specialization: "Nephrologist",
+          experience: 10,
         },
       },
     },
