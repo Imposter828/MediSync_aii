@@ -6,7 +6,7 @@ An AI-powered clinic management system built with Next.js, featuring patient and
 
 - **Frontend**: Next.js 14 (App Router), TypeScript, Tailwind CSS, ShadCN UI
 - **Backend**: Next.js API Routes
-- **Database**: PostgreSQL with Prisma ORM
+- **Database**: PostgreSQL (Supabase) with Prisma ORM
 - **Auth**: NextAuth.js with role-based access
 - **State**: Zustand
 - **AI**: Google Gemini API
@@ -53,11 +53,25 @@ npm install
 cp .env.example .env
 ```
 
-Edit `.env` with your database connection string and API keys:
+Edit `.env` with your Supabase database connection strings and API keys:
 ```
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/medisy?schema=public"
+# Database - Supabase (Production Ready)
+DATABASE_URL="postgresql://postgres.[YOUR_PROJECT_REF]:[YOUR_PASSWORD]@aws-0-[REGION].pooler.supabase.com:6543/postgres?pgbouncer=true&connection_limit=1"
+DIRECT_URL="postgresql://postgres.[YOUR_PROJECT_REF]:[YOUR_PASSWORD]@aws-0-[REGION].pooler.supabase.com:5432/postgres"
+
+# Supabase Client
+NEXT_PUBLIC_SUPABASE_URL="https://[YOUR_PROJECT_REF].supabase.co"
+NEXT_PUBLIC_SUPABASE_ANON_KEY="your-supabase-anon-key"
+
+# NextAuth
 NEXTAUTH_SECRET="your-super-secret-key"
 NEXTAUTH_URL="http://localhost:3000"
+
+# Brevo
+BREVO_API_KEY="your-brevo-api-key"
+BREVO_SENDER_EMAIL="your-verified-sender@email.com"
+
+# AI
 GEMINI_API_KEY="your-gemini-api-key"
 ```
 
